@@ -2,6 +2,7 @@
 const itemForm = document.getElementById("item-form");
 const itemInput = document.getElementById("item-input");
 const itemList = document.getElementById("item-list");
+const clearBtn = document.getElementById("clear");
 
 // console.log(itemForm);
 
@@ -45,5 +46,27 @@ function createIcon(classes) {
   return icon;
 }
 
+//Remove item
+function removeItem(e) {
+  // console.log(e.target.parentElement.classList);
+  //validate that only click and remove with class name of remove-item
+
+  if (e.target.parentElement.classList.contains("remove-item")) {
+    e.target.parentElement.parentElement.remove(); //from icon->button->list
+    // console.log("click");
+  }
+}
+
+//Clear all item
+function clearItems() {
+  // itemList.remove(); //or you can do
+  // itemList.innerHTML = ""; //or you can do
+  while (itemList.firstChild) {
+    itemList.removeChild(itemList.firstChild);
+  }
+}
+
 //2. Even Listeners ******
 itemForm.addEventListener("submit", addItem);
+itemList.addEventListener("click", removeItem);
+clearBtn.addEventListener("click", clearItems);
