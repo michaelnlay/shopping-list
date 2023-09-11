@@ -4,7 +4,7 @@ const itemInput = document.getElementById("item-input");
 const itemList = document.getElementById("item-list");
 const itemFilter = document.getElementById("filter");
 const clearBtn = document.getElementById("clear");
-// const items = itemList.querySelectorAll("li"); //move this inside the checkUI function
+
 // console.log(items.length);
 
 // console.log(itemForm);
@@ -74,7 +74,15 @@ function clearItems() {
   }
   checkUI();
 }
-
+//Filter Items
+function filterItems(e) {
+  const filterText = e.target.value.toLowerCase();
+  const items = itemList.querySelectorAll("li");
+  items.forEach((item) => {
+    const itemName = item.firstChild; //li has both text and button so by using firstChild, it will target the first child, which is the text name
+    console.log(itemName.textContent.toLowerCase()); //use textContent to convert string to text
+  });
+}
 //Check UI to appear or hidden the filter and clear all button
 function checkUI() {
   const items = itemList.querySelectorAll("li"); //so everytime function runs, we will take on new items
@@ -92,5 +100,6 @@ function checkUI() {
 itemForm.addEventListener("submit", addItem);
 itemList.addEventListener("click", removeItem);
 clearBtn.addEventListener("click", clearItems);
+itemFilter.addEventListener("input", filterItems); //for filter item
 
 checkUI();
