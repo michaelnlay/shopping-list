@@ -2,6 +2,7 @@
 const itemForm = document.getElementById("item-form");
 const itemInput = document.getElementById("item-input");
 const itemList = document.getElementById("item-list");
+// console.log(itemList);
 const itemFilter = document.getElementById("filter");
 const clearBtn = document.getElementById("clear");
 
@@ -76,11 +77,21 @@ function clearItems() {
 }
 //Filter Items
 function filterItems(e) {
-  const filterText = e.target.value.toLowerCase();
+  //1, get the text that being type, and make it lower case to prevent issue with uppercase on the item list
+  const text = e.target.value.toLowerCase();
+  console.log(text);
+  //3, get the list item
   const items = itemList.querySelectorAll("li");
+  //4, loop through items
+  //4a, get the name, not the whole element tag this will return a node "Milk", change node to text, then make it lower case
   items.forEach((item) => {
-    const itemName = item.firstChild; //li has both text and button so by using firstChild, it will target the first child, which is the text name
-    console.log(itemName.textContent.toLowerCase()); //use textContent to convert string to text
+    const itemName = item.firstChild.textContent.toLowerCase();
+    //5, match the typed text to the list item text use indexOf, if not true, it returns -1
+    if (itemName.indexOf(text) != -1) {
+      item.style.display = "flex";
+    } else {
+      item.style.display = "none";
+    }
   });
 }
 //Check UI to appear or hidden the filter and clear all button
