@@ -11,7 +11,7 @@ const clearBtn = document.getElementById("clear");
 // console.log(itemForm);
 
 //3. Create an addItem function *****
-function addItem(e) {
+function onAddItemSubmit(e) {
   e.preventDefault(); //to prevent it submits to the file
 
   const newItem = itemInput.value;
@@ -32,6 +32,9 @@ function addItem(e) {
 
   //Add li to the DOM
   itemList.appendChild(li);
+
+  //Add items to local Storage
+  localStorage.addItem(li);
   checkUI();
   itemInput.value = "";
 }
@@ -108,7 +111,7 @@ function checkUI() {
 }
 
 //2. Even Listeners ******
-itemForm.addEventListener("submit", addItem);
+itemForm.addEventListener("submit", onAddItemSubmit);
 itemList.addEventListener("click", removeItem);
 clearBtn.addEventListener("click", clearItems);
 itemFilter.addEventListener("input", filterItems); //for filter item
