@@ -21,7 +21,7 @@ function onAddItemSubmit(e) {
     alert("Please add an item");
     return;
   }
-  //   console.log(newItem.value);
+  console.log("before itemDOM");
 
   //Create item DOM element
   addItemToDOM(newItem);
@@ -51,19 +51,36 @@ function addItemToDOM(item) {
 function addItemToStorage(item) {
   //check if item already in local storage
   let itemsFromStorage;
+
   if (localStorage.getItem("items") === null) {
     //items is the key; equal null means nothing in the localStorage
     itemsFromStorage = [];
   } else {
-    itemsFromStorage = JSON.parse(localStorage.getItem("items")); //set that to array of item from storage
+    itemsFromStorage = JSON.parse(localStorage.getItem("items"));
+    //set that to array of item from storage
     //use JSON.parse to convert string to array
-
-    //Add new item to array
-    itemsFromStorage.push(item);
-
-    //Convert to JSON string and set to local storage
-    localStorage.setItem("items", JSON.stringify(itemsFromStorage));
   }
+  //Add new item to array
+  itemsFromStorage.push(item);
+
+  //Convert to JSON string and set to local storage
+  localStorage.setItem("items", JSON.stringify(itemsFromStorage));
+}
+
+//Get items from storage
+function getItemsFromStorage() {
+  //check if item already in local storage
+  let itemsFromStorage;
+
+  if (localStorage.getItem("items") === null) {
+    //items is the key; equal null means nothing in the localStorage
+    itemsFromStorage = [];
+  } else {
+    itemsFromStorage = JSON.parse(localStorage.getItem("items"));
+    //set that to array of item from storage
+    //use JSON.parse to convert string to array
+  }
+  return itemsFromStorage;
 }
 
 //Create a CreateButton function
@@ -145,11 +162,3 @@ clearBtn.addEventListener("click", clearItems);
 itemFilter.addEventListener("input", filterItems); //for filter item
 
 checkUI();
-
-//Add items to local Storage
-//1, add to local storage not just DOM
-//2, Remove item from local storage
-//3, load item when the page load
-//we can only store string in local Storage, key value pair
-//but we want to save a list of item, use an array of items, stringify that with json.stringify method then put them in local storage
-//when take them out, can run through the json.parse method, return with a regular array that we can use
