@@ -6,9 +6,14 @@ const itemList = document.getElementById("item-list");
 const itemFilter = document.getElementById("filter");
 const clearBtn = document.getElementById("clear");
 
-// console.log(items.length);
-
-// console.log(itemForm);
+function displayItems() {
+  //Get items from storage
+  const itemsFromStorage = getItemsFromStorage();
+  itemsFromStorage.forEach((item) => {
+    addItemToDOM(item);
+  });
+  checkUI();
+}
 
 //3. Create an addItem function *****
 function onAddItemSubmit(e) {
@@ -40,26 +45,47 @@ function addItemToDOM(item) {
   li.appendChild(document.createTextNode(item));
 
   const button = createButton("remove-item btn-link text-red");
-  //   console.log(li);
+
   li.appendChild(button);
 
   //Add li to the DOM
   itemList.appendChild(li);
 }
 
+//Create a CreateButton function
+function createButton(classes) {
+  const button = document.createElement("button");
+  button.className = classes;
+
+  const icon = createIcon("fa-solid fa-xmark");
+  button.appendChild(icon);
+
+  return button;
+}
+//Create an icon
+function createIcon(classes) {
+  const icon = document.createElement("i");
+  icon.className = classes;
+  return icon;
+}
+
 //Create a function to add item to localStorage
 function addItemToStorage(item) {
   //check if item already in local storage
-  let itemsFromStorage;
+  // let itemsFromStorage;
 
-  if (localStorage.getItem("items") === null) {
-    //items is the key; equal null means nothing in the localStorage
-    itemsFromStorage = [];
-  } else {
-    itemsFromStorage = JSON.parse(localStorage.getItem("items"));
-    //set that to array of item from storage
-    //use JSON.parse to convert string to array
-  }
+  // if (localStorage.getItem("items") === null) {
+  //   //items is the key; equal null means nothing in the localStorage
+  //   itemsFromStorage = [];
+  // } else {
+  //   itemsFromStorage = JSON.parse(localStorage.getItem("items"));
+  //   //set that to array of item from storage
+  //   //use JSON.parse to convert string to array
+  // }
+
+  //Simple way by follow the Dont repeat itself, after createing the getItemsFromStroage
+  const itemsFromStorage = getItemsFromStorage();
+
   //Add new item to array
   itemsFromStorage.push(item);
 
@@ -81,23 +107,6 @@ function getItemsFromStorage() {
     //use JSON.parse to convert string to array
   }
   return itemsFromStorage;
-}
-
-//Create a CreateButton function
-function createButton(classes) {
-  const button = document.createElement("button");
-  button.className = classes;
-
-  const icon = createIcon("fa-solid fa-xmark");
-  button.appendChild(icon);
-
-  return button;
-}
-//Create an icon
-function createIcon(classes) {
-  const icon = document.createElement("i");
-  icon.className = classes;
-  return icon;
 }
 
 //Remove item
@@ -155,10 +164,18 @@ function checkUI() {
   }
 }
 
-//2. Even Listeners ******
-itemForm.addEventListener("submit", onAddItemSubmit); // add to DOM and add to localStorage
-itemList.addEventListener("click", removeItem);
-clearBtn.addEventListener("click", clearItems);
-itemFilter.addEventListener("input", filterItems); //for filter item
+//Create initialize app so we don't have them on the global scope
+function init() {
+  //2. Even Listeners ******
+  itemForm.addEventListener("submit", onAddItemSubmit); // add to DOM and add to localStorage
+  itemList.addEventListener("click", removeItem);
+  clearBtn.addEventListener("click", clearItems);
+  itemFilter.addEventListener("input", filterItems); //for filter item
 
-checkUI();
+  //Display items on the page fromm the local Storage when the page is loaded
+  document.addEventListener("DOMContentLoaded", displayItems);
+
+  checkUI();
+}
+
+init();
