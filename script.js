@@ -29,12 +29,24 @@ function onAddItemSubmit(e) {
     return;
   }
 
-
- // Check for edit mode
+  // Check for edit mode
   if (isEditMode) {
     //take the item that is editing, remove from localStorage
     //then remove from UI from the DOM
     //Then add the new item
+    const itemToEdit = itemList.querySelector(".edit-mode");
+    // console.log(itemToEdit.textContent);
+    removeItemFromStorage(itemToEdit.textContent);
+    //remove class
+    itemToEdit.classList.remove("edit-mode");
+    itemToEdit.remove();
+    //then set isEditMode back false
+    isEditMode = false;
+  } else {
+    if (checkIfItemExists(newItem)) {
+      alert("That item is already exists!");
+      return;
+    }
   }
 
   //Create item DOM element
@@ -120,13 +132,24 @@ function getItemsFromStorage() {
 
 //onClick item to appear item on the input field
 function onClickItem(e) {
-  console.log(e.target.parentElement.parentElement);
+  // console.log(e.target.parentElement.parentElement);
   if (e.target.parentElement.classList.contains("remove-item")) {
     removeItem(e.target.parentElement.parentElement);
   } else {
     //create another funciton to set item edit
     setItemToEdit(e.target);
   }
+}
+
+//Function to prevent duplicate item
+function checkIfItemExists(item) {
+  const itemsFromStorage = getItemsFromStorage();
+  // if (itemsFromStorage.includes(item)) {
+  //   return true;
+  // } else {
+  //   return false;
+  // }
+  return itemsFromStorage.includes(item);
 }
 
 function setItemToEdit(item) {
@@ -214,6 +237,8 @@ function filterItems(e) {
 }
 //Check UI to appear or hidden the filter and clear all button
 function checkUI() {
+  itemInput.value = "";
+
   const items = itemList.querySelectorAll("li"); //so everytime function runs, we will take on new items
 
   if (items.length === 0) {
@@ -223,6 +248,10 @@ function checkUI() {
     clearBtn.style.display = "block";
     itemFilter.style.display = "block";
   }
+  //change the button back to default color after update item
+  formBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Add Item';
+  formBtn.style.backgroundColor = "#333";
+  isEditMode = false;
 }
 
 //Create initialize app so we don't have them on the global scope
