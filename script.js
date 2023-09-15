@@ -2,9 +2,11 @@
 const itemForm = document.getElementById("item-form");
 const itemInput = document.getElementById("item-input");
 const itemList = document.getElementById("item-list");
-// console.log(itemList);
 const itemFilter = document.getElementById("filter");
 const clearBtn = document.getElementById("clear");
+const formBtn = itemForm.querySelector("button");
+
+let isEditMode = false;
 
 function displayItems() {
   //Get items from storage
@@ -26,7 +28,14 @@ function onAddItemSubmit(e) {
     alert("Please add an item");
     return;
   }
-  console.log("before itemDOM");
+
+
+ // Check for edit mode
+  if (isEditMode) {
+    //take the item that is editing, remove from localStorage
+    //then remove from UI from the DOM
+    //Then add the new item
+  }
 
   //Create item DOM element
   addItemToDOM(newItem);
@@ -109,18 +118,66 @@ function getItemsFromStorage() {
   return itemsFromStorage;
 }
 
-//Remove item
-function removeItem(e) {
-  // console.log(e.target.parentElement.classList);
-  //validate that only click and remove with class name of remove-item
-
+//onClick item to appear item on the input field
+function onClickItem(e) {
+  console.log(e.target.parentElement.parentElement);
   if (e.target.parentElement.classList.contains("remove-item")) {
-    if (confirm("Are you sure?")) {
-      e.target.parentElement.parentElement.remove(); //from icon->button->list
-      checkUI();
-    }
-    // console.log("click");
+    removeItem(e.target.parentElement.parentElement);
+  } else {
+    //create another funciton to set item edit
+    setItemToEdit(e.target);
   }
+}
+
+function setItemToEdit(item) {
+  //1, set isEditMode to true
+  isEditMode = true;
+
+  //To prevent all item to be to gray color when click on it, use loop
+  itemList
+    .querySelectorAll("li")
+    .forEach((i) => i.classList.remove("edit-mode"));
+
+  item.classList.add("edit-mode");
+  // console.log(formBtn.innerHTML);
+  formBtn.innerHTML = '<i class="fa-solid fa-pen"></i> Update Item';
+  formBtn.style.backgroundColor = "green";
+  itemInput.value = item.textContent;
+  // console.log("item is" + item.textContent);
+}
+
+//Remove item
+// function removeItem(e) {
+//   // console.log(e.target.parentElement.classList);
+//   //validate that only click and remove with class name of remove-item
+
+//   if (e.target.parentElement.classList.contains("remove-item")) {
+//     if (confirm("Are you sure?")) {
+//       e.target.parentElement.parentElement.remove(); //from icon->button->list
+//       checkUI();
+//     }
+//     // console.log("click");
+//   }
+// }
+function removeItem(item) {
+  if (confirm("Are you sure?")) {
+    //Remove item from DOM
+    item.remove();
+
+    //remove item from storage
+    removeItemFromStorage(item.textContent);
+    checkUI();
+  }
+}
+
+function removeItemFromStorage(item) {
+  let itemsFromStorage = getItemsFromStorage();
+  // console.log(itemsFromStorage);
+  // Filter out item to be removed
+  itemsFromStorage = itemsFromStorage.filter((i) => i !== item);
+
+  //Re-set to localstorage
+  localStorage.setItem("items", JSON.stringify(itemsFromStorage));
 }
 
 //Clear all item
@@ -130,6 +187,10 @@ function clearItems() {
   while (itemList.firstChild) {
     itemList.removeChild(itemList.firstChild);
   }
+
+  //Clear from localStorage
+  localStorage.removeItem("items");
+
   checkUI();
 }
 //Filter Items
@@ -168,7 +229,8 @@ function checkUI() {
 function init() {
   //2. Even Listeners ******
   itemForm.addEventListener("submit", onAddItemSubmit); // add to DOM and add to localStorage
-  itemList.addEventListener("click", removeItem);
+  // itemList.addEventListener("click", removeItem); //change this to onItemClick so itstead of removing them, have them on the input form after click on the clear button or input field for updating
+  itemList.addEventListener("click", onClickItem);
   clearBtn.addEventListener("click", clearItems);
   itemFilter.addEventListener("input", filterItems); //for filter item
 
@@ -179,3 +241,5 @@ function init() {
 }
 
 init();
+
+//To edit the item on the list when user click on the item on the DOM
